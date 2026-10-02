@@ -1,0 +1,75 @@
+<section class="task-list">
+  <header class="page-header">
+    <div>
+      <h1>Task Manager</h1>
+      <p>Управление задачами</p>
+    </div>
+  </header>
+
+  <nav class="filters" aria-label="Фильтр задач">
+    @for (filter of filters; track filter) {
+      <button
+        type="button"
+        class="filter-button"
+        [class.active]="selectedFilter === filter"
+        [attr.aria-pressed]="selectedFilter === filter"
+        (click)="selectFilter(filter)"
+      >
+        {{ getFilterLabel(filter) }}
+      </button>
+    }
+  </nav>
+
+  @if (loading) {
+    <div class="state-message">
+      <p>Загрузка задач...</p>
+    </div>
+  } @else if (error) {
+    <div class="state-message error">
+      <p>Не удалось загрузить задачи.</p>
+
+      <button
+        type="button"
+        class="retry-button"
+        (click)="retry()"
+      >
+        Повторить
+      </button>
+    </div>
+  } @else if (tasks.length === 0) {
+    <div class="state-message">
+      @if (selectedFilter === 'all') {
+        <p>Задач пока нет.</p>
+      } @else {
+        <p>Нет задач с выбранным статусом.</p>
+      }
+    </div>
+  } @else {
+    <div class="tasks">
+      @for (task of tasks; track task.id) {
+        <article class="task-card">
+          <div class="task-card__header">
+            <h2>{{ task.title }}</h2>
+
+            <span class="status">
+              {{ getStatusLabel(task.status) }}
+            </span>
+          </div>
+
+          @if (task.description) {
+            <p class="task-card__description">
+              {{ task.description }}
+            </p>
+          }
+
+          <time
+            class="task-card__date"
+            [attr.datetime]="task.createdAt"
+          >
+            {{ task.createdAt | date: 'dd.MM.yyyy HH:mm' }}
+          </time>
+        </article>
+      }
+    </div>
+  }
+</section>
