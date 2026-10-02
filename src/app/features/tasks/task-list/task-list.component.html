@@ -78,6 +78,26 @@
           >
             {{ task.createdAt | date: 'dd.MM.yyyy HH:mm' }}
           </time>
+          @if (task.status !== 'done') {
+            <button
+                type="button"
+                class="status-button"
+                [disabled]="isStatusUpdating(task)"
+                (click)="updateTaskStatus(task)"
+            >
+                @if (isStatusUpdating(task)) {
+                    Обновление...
+                } @else {
+                {{ getNextStatusLabel(task.status) }}
+                }
+            </button>
+          }
+
+          @if (statusUpdateErrors.has(task.id)) {
+            <p class="status-error">
+                Не удалось изменить статус. Попробуйте ещё раз.
+            </p>
+          }
         </article>
       }
     </div>
@@ -140,7 +160,7 @@
               @if (taskForm.controls.title.hasError('maxlength')) {
                 <p>Название не должно превышать 100 символов.</p>
               }
-              
+
               @if (taskForm.controls.title.hasError('whitespace')) {
                 <p>Название не может состоять только из пробелов.</p>
               }
