@@ -41,9 +41,18 @@
   } @else if (tasks.length === 0) {
     <div class="state-message">
       @if (selectedFilter === 'all') {
-        <p>Задач пока нет.</p>
+        <app-task-empty-state 
+            title="Задач пока нет" 
+            description="Создайте свою первую задачу, чтобы начать работу" 
+            buttonText="Создать задачу"
+            (action)="openCreateModal()" 
+        />
       } @else {
-        <p>Нет задач с выбранным статусом.</p>
+        <app-task-empty-state 
+            title="Задачи не найдены" 
+            description="Нет задач с выбранным статусом" 
+            [showButton]="false" 
+        />
       }
     </div>
   } @else {

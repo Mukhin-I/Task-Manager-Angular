@@ -17,10 +17,11 @@ export class TaskService {
 
   private readonly apiUrl = 'http://localhost:3000/tasks';
 
-  getTasks(status?: TaskStatus): Observable<Task[]> {
+
+  getTasks(status?: TaskStatus | 'all'): Observable<Task[]> {
     let params = new HttpParams();
 
-    if (status) {
+    if (status && status !== 'all') {
       params = params.set('status', status);
     }
 

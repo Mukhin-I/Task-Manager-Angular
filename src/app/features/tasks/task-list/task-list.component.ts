@@ -5,6 +5,7 @@ import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 
 import { TaskListSkeletonComponent } from '../components/task-list-skeleton/task-list-skeleton.component';
 import { TaskErrorStateComponent } from '../components/task-error-state/task-error-state.component';
+import { TaskEmptyStateComponent } from '../components/task-empty-state/task-empty-state.component';
 
 import {
   AbstractControl,
@@ -41,6 +42,7 @@ const noWhitespaceValidator: ValidatorFn = (
     ReactiveFormsModule, 
     TaskListSkeletonComponent, 
     TaskErrorStateComponent,
+    TaskEmptyStateComponent,
   ],
   templateUrl: './task-list.component.html',
   styleUrl: './task-list.component.scss',
