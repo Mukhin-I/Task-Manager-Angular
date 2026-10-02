@@ -41,7 +41,6 @@ export class TaskListComponent {
   constructor() {
     this.filterSubject
       .pipe(
-        distinctUntilChanged(),
         switchMap((filter) => {
           this.loading = true;
           this.error = false;
