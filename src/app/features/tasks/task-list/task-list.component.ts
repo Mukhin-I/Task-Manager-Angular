@@ -1,15 +1,33 @@
 import { Component, DestroyRef, inject } from '@angular/core';
 import { DatePipe } from '@angular/common';
-import { BehaviorSubject, catchError, distinctUntilChanged, finalize, of, switchMap } from 'rxjs';
+import { BehaviorSubject, catchError, finalize, of, switchMap } from 'rxjs';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
+
+import {
+  AbstractControl,
+  FormControl,
+  FormGroup,
+  ReactiveFormsModule,
+  ValidationErrors,
+  ValidatorFn,
+  Validators,
+} from '@angular/forms';
 
 import { Task, TaskFilter, TaskStatus } from '../../../models/task.model';
 import { TaskService } from '../../../core/services/task.service';
 
+const noWhitespaceValidator: ValidatorFn = (
+  control: AbstractControl,
+): ValidationErrors | null => {
+  const value = control.value as string;
+
+  return value.trim().length > 0 ? null : { whitespace: true };
+};
+
 @Component({
   selector: 'app-task-list',
   standalone: true,
-  imports: [DatePipe],
+  imports: [DatePipe, ReactiveFormsModule],
   templateUrl: './task-list.component.html',
   styleUrl: './task-list.component.scss',
 })
@@ -37,6 +55,25 @@ export class TaskListComponent {
   tasks: Task[] = [];
   loading = false;
   error = false;
+
+  isCreateModalOpen = false;
+
+  readonly taskForm = new FormGroup({
+    title: new FormControl('', {
+      nonNullable: true,
+      validators: [
+        Validators.required,
+        Validators.maxLength(100),
+        noWhitespaceValidator,
+      ],
+    }),
+    description: new FormControl('', {
+      nonNullable: true,
+    }),
+  });
+
+creating = false;
+createError = false;
 
   constructor() {
     this.filterSubject
@@ -96,5 +133,27 @@ export class TaskListComponent {
         new Date(b.createdAt).getTime() -
         new Date(a.createdAt).getTime(),
     );
+  }
+
+  createTask(): void {
+    this.taskForm.markAllAsTouched();
+
+
+    if (this.taskForm.invalid) {
+      return;
+    }
+  }
+
+  openCreateModal(): void {
+    this.isCreateModalOpen = true;
+  }
+
+  closeCreateModal(): void {
+    if (this.creating) {
+      return;
+    }
+
+    this.isCreateModalOpen = false;
+    this.taskForm.reset();
   }
 }
