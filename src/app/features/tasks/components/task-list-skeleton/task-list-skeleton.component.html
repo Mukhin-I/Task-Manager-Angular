@@ -1,0 +1,16 @@
+<div class="tasks" aria-busy="true" aria-label="Загрузка задач">
+  @for (item of items(); track $index) {
+    <div class="task-card task-card--skeleton">
+      <div class="task-card__header">
+        <div class="skeleton skeleton--title"></div>
+        <div class="skeleton skeleton--badge"></div>
+      </div>
+
+      <div class="skeleton skeleton--text"></div>
+      <div class="skeleton skeleton--text skeleton--short"></div>
+
+      <div class="skeleton skeleton--date"></div>
+      <div class="skeleton skeleton--button"></div>
+    </div>
+  }
+</div>

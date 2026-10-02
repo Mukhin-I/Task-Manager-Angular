@@ -3,6 +3,8 @@ import { DatePipe } from '@angular/common';
 import { BehaviorSubject, catchError, finalize, of, switchMap } from 'rxjs';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 
+import { TaskListSkeletonComponent } from '../components/task-list-skeleton/task-list-skeleton.component';
+
 import {
   AbstractControl,
   FormControl,
@@ -33,7 +35,7 @@ const noWhitespaceValidator: ValidatorFn = (
 @Component({
   selector: 'app-task-list',
   standalone: true,
-  imports: [DatePipe, ReactiveFormsModule],
+  imports: [DatePipe, ReactiveFormsModule, TaskListSkeletonComponent],
   templateUrl: './task-list.component.html',
   styleUrl: './task-list.component.scss',
 })

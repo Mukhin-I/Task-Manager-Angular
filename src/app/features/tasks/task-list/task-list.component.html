@@ -1,4 +1,4 @@
-<section class="task-list">
+<section class="container">
   <header class="page-header">
     <div>
       <h1>Task Manager</h1>
@@ -6,34 +6,33 @@
     </div>
   </header>
 
-  <div class="actions">
-    <button
-        type="button"
-        class="create-button"
-        (click)="openCreateModal()"
-    >
-        Создать задачу
-    </button>
+  <div class="action-buttons">
+    <nav class="filters" aria-label="Фильтр задач">
+        @for (filter of filters; track filter) {
+        <button
+            type="button"
+            class="filter-button"
+            [class.active]="selectedFilter === filter"
+            [attr.aria-pressed]="selectedFilter === filter"
+            (click)="selectFilter(filter)"
+        >
+            {{ getFilterLabel(filter) }}
+        </button>
+        }
+    </nav>
+    <div class="actions">
+        <button
+            type="button"
+            class="create-button"
+            (click)="openCreateModal()"
+        >
+            Создать задачу
+        </button>
+    </div>
   </div>
 
-  <nav class="filters" aria-label="Фильтр задач">
-    @for (filter of filters; track filter) {
-      <button
-        type="button"
-        class="filter-button"
-        [class.active]="selectedFilter === filter"
-        [attr.aria-pressed]="selectedFilter === filter"
-        (click)="selectFilter(filter)"
-      >
-        {{ getFilterLabel(filter) }}
-      </button>
-    }
-  </nav>
-
   @if (loading) {
-    <div class="state-message">
-      <p>Загрузка задач...</p>
-    </div>
+      <app-task-list-skeleton />
   } @else if (error) {
     <div class="state-message error">
       <p>Не удалось загрузить задачи.</p>
@@ -61,8 +60,8 @@
           <div class="task-card__header">
             <h2>{{ task.title }}</h2>
 
-            <span class="status">
-              {{ getStatusLabel(task.status) }}
+            <span class="status" [class]="'status status--' + task.status">
+                {{ getStatusLabel(task.status) }}
             </span>
           </div>
 

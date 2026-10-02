@@ -1,0 +1,80 @@
+.tasks {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+  gap: 20px;
+}
+
+.task-card {
+  display: flex;
+  flex-direction: column;
+  padding: 24px;
+  border: 1px solid #f1f5f9;
+  border-radius: 16px;
+  background: #ffffff;
+  box-shadow: 0 2px 6px rgba(15, 23, 42, 0.03);
+  pointer-events: none;
+  user-select: none;
+}
+
+.task-card__header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+@keyframes skeleton-shimmer {
+  0% {
+    background-position: -200% 0;
+  }
+  100% {
+    background-position: 200% 0;
+  }
+}
+
+.skeleton {
+  background: linear-gradient(
+    90deg,
+    #e2e8f0 25%,
+    #f1f5f9 37%,
+    #e2e8f0 63%
+  );
+  background-size: 200% 100%;
+  animation: skeleton-shimmer 1.5s ease-in-out infinite;
+  border-radius: 6px;
+
+  &--title {
+    height: 22px;
+    width: 55%;
+  }
+
+  &--badge {
+    height: 24px;
+    width: 75px;
+    border-radius: 20px;
+  }
+
+  &--text {
+    height: 14px;
+    width: 100%;
+    margin-top: 12px;
+
+    &.skeleton--short {
+      width: 70%;
+      margin-top: 6px;
+    }
+  }
+
+  &--date {
+    height: 12px;
+    width: 35%;
+    margin-top: 20px;
+  }
+
+  &--button {
+    height: 40px;
+    width: 100%;
+    margin-top: 16px;
+    border-radius: 10px;
+  }
+}
