@@ -4,6 +4,7 @@ import { BehaviorSubject, catchError, finalize, of, switchMap } from 'rxjs';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 
 import { TaskListSkeletonComponent } from '../components/task-list-skeleton/task-list-skeleton.component';
+import { TaskErrorStateComponent } from '../components/task-error-state/task-error-state.component';
 
 import {
   AbstractControl,
@@ -35,7 +36,12 @@ const noWhitespaceValidator: ValidatorFn = (
 @Component({
   selector: 'app-task-list',
   standalone: true,
-  imports: [DatePipe, ReactiveFormsModule, TaskListSkeletonComponent],
+  imports: [
+    DatePipe,
+    ReactiveFormsModule, 
+    TaskListSkeletonComponent, 
+    TaskErrorStateComponent,
+  ],
   templateUrl: './task-list.component.html',
   styleUrl: './task-list.component.scss',
 })
