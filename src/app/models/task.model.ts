@@ -13,6 +13,8 @@ export interface Task {
 export interface CreateTaskDto {
   title: string;
   description?: string;
+  status: TaskStatus;
+  createdAt: string;
 }
 
 export interface UpdateTaskDto {

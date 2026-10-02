@@ -13,7 +13,13 @@ import {
   Validators,
 } from '@angular/forms';
 
-import { Task, TaskFilter, TaskStatus } from '../../../models/task.model';
+import {
+  CreateTaskDto,
+  Task,
+  TaskFilter,
+  TaskStatus,
+} from '../../../models/task.model';
+
 import { TaskService } from '../../../core/services/task.service';
 
 const noWhitespaceValidator: ValidatorFn = (
@@ -138,10 +144,36 @@ createError = false;
   createTask(): void {
     this.taskForm.markAllAsTouched();
 
-
-    if (this.taskForm.invalid) {
+    if (this.taskForm.invalid || this.creating) {
       return;
     }
+
+    const title = this.taskForm.controls.title.value.trim();
+    const description = this.taskForm.controls.description.value.trim();
+
+    const task: CreateTaskDto = {
+      title,
+      ...(description ? { description } : {}),
+      status: 'new',
+      createdAt: new Date().toISOString(),
+    };
+
+    this.creating = true;
+    this.createError = false;
+
+    this.taskService.createTask(task).subscribe({
+      next: () => {
+        this.creating = false;
+        this.isCreateModalOpen = false;
+        this.taskForm.reset();
+
+        this.retry();
+      },
+      error: () => {
+        this.creating = false;
+        this.createError = true;
+      },
+    });
   }
 
   openCreateModal(): void {
