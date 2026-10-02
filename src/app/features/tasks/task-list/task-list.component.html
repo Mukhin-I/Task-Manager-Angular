@@ -73,26 +73,33 @@
             </p>
           }
 
-          <time
-            class="task-card__date"
-            [attr.datetime]="task.createdAt"
-          >
-            {{ task.createdAt | date: 'dd.MM.yyyy HH:mm' }}
-          </time>
-          @if (task.status !== 'done') {
-            <button
+          <div class="task-card__footer">
+            <time
+                class="task-card__date"
+                [attr.datetime]="task.createdAt"
+            >
+                {{ task.createdAt | date: 'dd.MM.yyyy HH:mm' }}
+            </time>
+
+            @if (task.status !== 'done') {
+                <button
                 type="button"
                 class="status-button"
                 [disabled]="isStatusUpdating(task)"
                 (click)="updateTaskStatus(task)"
-            >
+                >
                 @if (isStatusUpdating(task)) {
                     Обновление...
                 } @else {
-                {{ getNextStatusLabel(task.status) }}
+                    @if (task.status === 'new') {
+                    → В работу
+                    } @else {
+                    ✓ Завершить
+                    }
                 }
-            </button>
-          }
+                </button>
+            }
+            </div>
 
           @if (statusUpdateErrors.has(task.id)) {
             <p class="status-error">
