@@ -1,0 +1,44 @@
+{
+  "tasks": [
+    {
+      "id": 1,
+      "title": "Подготовить отчёт",
+      "description": "Отчёт по продажам за май",
+      "status": "new",
+      "createdAt": "2026-09-28T10:00:00.000Z"
+    },
+    {
+      "id": 2,
+      "title": "Созвониться с командой",
+      "description": "Обсудить план на следующую неделю",
+      "status": "in_progress",
+      "createdAt": "2026-09-29T07:15:00.000Z"
+    },
+    {
+      "id": 3,
+      "title": "Обновить документацию",
+      "status": "done",
+      "createdAt": "2026-09-30T12:30:00.000Z"
+    },
+    {
+      "id": 4,
+      "title": "Проверить pull request",
+      "description": "Проверить изменения перед merge",
+      "status": "new",
+      "createdAt": "2026-10-01T08:20:00.000Z"
+    },
+    {
+      "id": 5,
+      "title": "Настроить CI",
+      "description": "Добавить проверку lint и build",
+      "status": "in_progress",
+      "createdAt": "2026-10-01T14:10:00.000Z"
+    },
+    {
+      "id": 6,
+      "title": "Закрыть старые задачи",
+      "status": "done",
+      "createdAt": "2026-10-02T06:45:00.000Z"
+    }
+  ]
+}
