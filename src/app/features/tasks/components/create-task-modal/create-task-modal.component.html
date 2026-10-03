@@ -1,0 +1,98 @@
+<div class="modal-backdrop" (click)="close()">
+  <section
+    class="modal"
+    role="dialog"
+    aria-modal="true"
+    aria-labelledby="create-task-title"
+    (click)="$event.stopPropagation()"
+  >
+    <div class="modal__header">
+      <div>
+        <h2 id="create-task-title">Новая задача</h2>
+        <p>Заполните информацию о задаче</p>
+      </div>
+
+      <button
+        type="button"
+        class="modal__close"
+        aria-label="Закрыть"
+        (click)="close()"
+      >
+        ×
+      </button>
+    </div>
+
+    <form
+      class="task-form"
+      [formGroup]="taskForm"
+      (ngSubmit)="createTask()"
+    >
+      <div class="form-field">
+        <label for="title">Название</label>
+
+        <input
+          id="title"
+          type="text"
+          formControlName="title"
+          maxlength="100"
+          placeholder="Например, Подготовить отчёт"
+        />
+
+        @if (
+          taskForm.controls.title.touched &&
+          taskForm.controls.title.errors
+        ) {
+          <div class="field-error">
+            @if (taskForm.controls.title.hasError('required')) {
+              <p>Введите название задачи.</p>
+            }
+
+            @if (taskForm.controls.title.hasError('maxlength')) {
+              <p>Название не должно превышать 100 символов.</p>
+            }
+
+            @if (taskForm.controls.title.hasError('whitespace')) {
+              <p>Название не может состоять только из пробелов.</p>
+            }
+          </div>
+        }
+      </div>
+
+      <div class="form-field">
+        <label for="description">Описание</label>
+
+        <textarea
+          id="description"
+          formControlName="description"
+          rows="4"
+          placeholder="Добавьте описание задачи"
+        ></textarea>
+      </div>
+
+      @if (createError) {
+        <p class="form-error">
+          Не удалось создать задачу. Попробуйте ещё раз.
+        </p>
+      }
+
+      <div class="modal__actions">
+        <button
+          type="button"
+          class="secondary-button"
+          [disabled]="creating"
+          (click)="close()"
+        >
+          Отмена
+        </button>
+
+        <button
+          type="submit"
+          class="primary-button"
+          [disabled]="creating"
+        >
+          {{ creating ? 'Создание...' : 'Создать задачу' }}
+        </button>
+      </div>
+    </form>
+  </section>
+</div>

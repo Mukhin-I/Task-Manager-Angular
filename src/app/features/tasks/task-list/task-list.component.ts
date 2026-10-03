@@ -6,19 +6,9 @@ import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { TaskListSkeletonComponent } from '../components/task-list-skeleton/task-list-skeleton.component';
 import { TaskErrorStateComponent } from '../components/task-error-state/task-error-state.component';
 import { TaskEmptyStateComponent } from '../components/task-empty-state/task-empty-state.component';
+import { CreateTaskModalComponent } from '../components/create-task-modal/create-task-modal.component';
 
 import {
-  AbstractControl,
-  FormControl,
-  FormGroup,
-  ReactiveFormsModule,
-  ValidationErrors,
-  ValidatorFn,
-  Validators,
-} from '@angular/forms';
-
-import {
-  CreateTaskDto,
   Task,
   TaskFilter,
   TaskStatus,
@@ -26,23 +16,15 @@ import {
 
 import { TaskService } from '../../../core/services/task.service';
 
-const noWhitespaceValidator: ValidatorFn = (
-  control: AbstractControl,
-): ValidationErrors | null => {
-  const value = control.value as string;
-
-  return value.trim().length > 0 ? null : { whitespace: true };
-};
-
 @Component({
   selector: 'app-task-list',
   standalone: true,
   imports: [
     DatePipe,
-    ReactiveFormsModule, 
     TaskListSkeletonComponent, 
     TaskErrorStateComponent,
     TaskEmptyStateComponent,
+    CreateTaskModalComponent,
   ],
   templateUrl: './task-list.component.html',
   styleUrl: './task-list.component.scss',
@@ -76,23 +58,6 @@ export class TaskListComponent {
   error = false;
 
   isCreateModalOpen = false;
-
-  readonly taskForm = new FormGroup({
-    title: new FormControl('', {
-      nonNullable: true,
-      validators: [
-        Validators.required,
-        Validators.maxLength(100),
-        noWhitespaceValidator,
-      ],
-    }),
-    description: new FormControl('', {
-      nonNullable: true,
-    }),
-  });
-
-creating = false;
-createError = false;
 
   constructor() {
     this.filterSubject
@@ -154,41 +119,6 @@ createError = false;
     );
   }
 
-  createTask(): void {
-    this.taskForm.markAllAsTouched();
-
-    if (this.taskForm.invalid || this.creating) {
-      return;
-    }
-
-    const title = this.taskForm.controls.title.value.trim();
-    const description = this.taskForm.controls.description.value.trim();
-
-    const task: CreateTaskDto = {
-      title,
-      ...(description ? { description } : {}),
-      status: 'new',
-      createdAt: new Date().toISOString(),
-    };
-
-    this.creating = true;
-    this.createError = false;
-
-    this.taskService.createTask(task).subscribe({
-      next: () => {
-        this.creating = false;
-        this.isCreateModalOpen = false;
-        this.taskForm.reset();
-
-        this.retry();
-      },
-      error: () => {
-        this.creating = false;
-        this.createError = true;
-      },
-    });
-  }
-
   updateTaskStatus(task: Task): void {
     if (task.status === 'done' || this.updatingTaskIds.has(task.id)) {
       return;
@@ -223,28 +153,16 @@ createError = false;
     return this.updatingTaskIds.has(task.id);
   }
 
-  getNextStatusLabel(status: TaskStatus): string | null {
-    if (status === 'new') {
-      return 'В работу';
-    }
-
-    if (status === 'in_progress') {
-      return 'Завершить';
-    }
-
-    return null;
-  }
-
   openCreateModal(): void {
     this.isCreateModalOpen = true;
   }
 
   closeCreateModal(): void {
-    if (this.creating) {
-      return;
-    }
-
     this.isCreateModalOpen = false;
-    this.taskForm.reset();
+  }
+
+  onTaskCreated(): void {
+    this.closeCreateModal();
+    this.retry();
   }
 }

@@ -8,50 +8,50 @@
 
   <div class="action-buttons">
     <nav class="filters" aria-label="Фильтр задач">
-        @for (filter of filters; track filter) {
+      @for (filter of filters; track filter) {
         <button
-            type="button"
-            class="filter-button"
-            [class.active]="selectedFilter === filter"
-            [attr.aria-pressed]="selectedFilter === filter"
-            (click)="selectFilter(filter)"
+          type="button"
+          class="filter-button"
+          [class.active]="selectedFilter === filter"
+          [attr.aria-pressed]="selectedFilter === filter"
+          (click)="selectFilter(filter)"
         >
-            {{ getFilterLabel(filter) }}
+          {{ getFilterLabel(filter) }}
         </button>
-        }
+      }
     </nav>
     <div class="actions">
-        <button
-            type="button"
-            class="create-button"
-            (click)="openCreateModal()"
-        >
-            Создать задачу
-        </button>
+      <button
+        type="button"
+        class="create-button"
+        (click)="openCreateModal()"
+      >
+        Создать задачу
+      </button>
     </div>
   </div>
 
   @if (loading) {
-      <app-task-list-skeleton />
+    <app-task-list-skeleton />
   } @else if (error) {
     <app-task-error-state 
-        description="Произошла ошибка при загрузке списка задач" 
-        (retry)="retry()" 
+      description="Произошла ошибка при загрузке списка задач" 
+      (retry)="retry()" 
     />
   } @else if (tasks.length === 0) {
     <div class="state-message">
       @if (selectedFilter === 'all') {
         <app-task-empty-state 
-            title="Задач пока нет" 
-            description="Создайте свою первую задачу, чтобы начать работу" 
-            buttonText="Создать задачу"
-            (action)="openCreateModal()" 
+          title="Задач пока нет" 
+          description="Создайте свою первую задачу, чтобы начать работу" 
+          buttonText="Создать задачу"
+          (action)="openCreateModal()" 
         />
       } @else {
         <app-task-empty-state 
-            title="Задачи не найдены" 
-            description="Нет задач с выбранным статусом" 
-            [showButton]="false" 
+          title="Задачи не найдены" 
+          description="Нет задач с выбранным статусом" 
+          [showButton]="false" 
         />
       }
     </div>
@@ -63,7 +63,7 @@
             <h2>{{ task.title }}</h2>
 
             <span class="status" [class]="'status status--' + task.status">
-                {{ getStatusLabel(task.status) }}
+              {{ getStatusLabel(task.status) }}
             </span>
           </div>
 
@@ -75,35 +75,35 @@
 
           <div class="task-card__footer">
             <time
-                class="task-card__date"
-                [attr.datetime]="task.createdAt"
+              class="task-card__date"
+              [attr.datetime]="task.createdAt"
             >
-                {{ task.createdAt | date: 'dd.MM.yyyy HH:mm' }}
+              {{ task.createdAt | date: 'dd.MM.yyyy HH:mm' }}
             </time>
 
             @if (task.status !== 'done') {
-                <button
+              <button
                 type="button"
                 class="status-button"
                 [disabled]="isStatusUpdating(task)"
                 (click)="updateTaskStatus(task)"
-                >
+              >
                 @if (isStatusUpdating(task)) {
-                    Обновление...
+                  Обновление...
                 } @else {
-                    @if (task.status === 'new') {
+                  @if (task.status === 'new') {
                     → В работу
-                    } @else {
+                  } @else {
                     ✓ Завершить
-                    }
+                  }
                 }
-                </button>
+              </button>
             }
-            </div>
+          </div>
 
           @if (statusUpdateErrors.has(task.id)) {
             <p class="status-error">
-                Не удалось изменить статус. Попробуйте ещё раз.
+              Не удалось изменить статус. Попробуйте ещё раз.
             </p>
           }
         </article>
@@ -113,105 +113,8 @@
 </section>
 
 @if (isCreateModalOpen) {
-  <div
-    class="modal-backdrop"
-    (click)="closeCreateModal()"
-  >
-    <section
-      class="modal"
-      role="dialog"
-      aria-modal="true"
-      aria-labelledby="create-task-title"
-      (click)="$event.stopPropagation()"
-    >
-      <div class="modal__header">
-        <div>
-          <h2 id="create-task-title">Новая задача</h2>
-          <p>Заполните информацию о задаче</p>
-        </div>
-
-        <button
-          type="button"
-          class="modal__close"
-          aria-label="Закрыть"
-          (click)="closeCreateModal()"
-        >
-          ×
-        </button>
-      </div>
-
-      <form
-        class="task-form"
-        [formGroup]="taskForm"
-        (ngSubmit)="createTask()"
-      >
-        <div class="form-field">
-          <label for="title">Название</label>
-
-          <input
-            id="title"
-            type="text"
-            formControlName="title"
-            maxlength="100"
-            placeholder="Например, Подготовить отчёт"
-          />
-
-          @if (
-            taskForm.controls.title.touched &&
-            taskForm.controls.title.errors
-          ) {
-            <div class="field-error">
-              @if (taskForm.controls.title.hasError('required')) {
-                <p>Введите название задачи.</p>
-              }
-
-              @if (taskForm.controls.title.hasError('maxlength')) {
-                <p>Название не должно превышать 100 символов.</p>
-              }
-
-              @if (taskForm.controls.title.hasError('whitespace')) {
-                <p>Название не может состоять только из пробелов.</p>
-              }
-            </div>
-          }
-        </div>
-
-        <div class="form-field">
-          <label for="description">Описание</label>
-
-          <textarea
-            id="description"
-            formControlName="description"
-            rows="4"
-            placeholder="Добавьте описание задачи"
-          ></textarea>
-        </div>
-
-        @if (createError) {
-          <p class="form-error">
-            Не удалось создать задачу. Попробуйте ещё раз.
-          </p>
-        }
-
-        <div class="modal__actions">
-          <button
-            type="button"
-            class="secondary-button"
-            [disabled]="creating"
-            (click)="closeCreateModal()"
-          >
-            Отмена
-          </button>
-
-          <button
-            type="submit"
-            class="primary-button"
-            [disabled]="creating"
-          >
-            {{ creating ? 'Создание...' : 'Создать задачу' }}
-          </button>
-        </div>
-      </form>
-    </section>
-  </div>
+  <app-create-task-modal
+    (closed)="closeCreateModal()"
+    (taskCreated)="onTaskCreated()"
+  />
 }
