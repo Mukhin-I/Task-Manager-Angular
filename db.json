@@ -24,8 +24,28 @@
       "id": 4,
       "title": "Проверить pull request",
       "description": "Проверить изменения перед merge",
-      "status": "in_progress",
+      "status": "new",
       "createdAt": "2026-10-01T08:20:00.000Z"
+    },
+    {
+      "id": 5,
+      "title": "Настроить CI",
+      "description": "Добавить проверку lint и build",
+      "status": "in_progress",
+      "createdAt": "2026-10-01T14:10:00.000Z"
+    },
+    {
+      "id": 6,
+      "title": "Закрыть старые задачи",
+      "status": "done",
+      "createdAt": "2026-10-02T06:45:00.000Z"
+    },
+    {
+      "title": "Испечь пирог",
+      "description": "Приготовить пирог с яблоками и корицей",
+      "status": "new",
+      "createdAt": "2026-10-05T10:43:53.741Z",
+      "id": 7
     }
   ]
 }
