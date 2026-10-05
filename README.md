@@ -1,27 +1,84 @@
-# TaskManager
+# Task Manager
 
-This project was generated with [Angular CLI](https://github.com/angular/angular-cli) version 18.2.21.
+Небольшое приложение для управления задачами на Angular с использованием `json-server` в качестве mock REST API.
 
-## Development server
+## Как запустить
 
-Run `ng serve` for a dev server. Navigate to `http://localhost:4200/`. The application will automatically reload if you change any of the source files.
+### Требования
 
-## Code scaffolding
+* Node.js 20+
+* Angular 18
+* npm
 
-Run `ng generate component component-name` to generate a new component. You can also use `ng generate directive|pipe|service|class|guard|interface|enum|module`.
+### Установка
 
-## Build
+Клонировать репозиторий и установить зависимости:
 
-Run `ng build` to build the project. The build artifacts will be stored in the `dist/` directory.
+```bash
+git clone https://github.com/Mukhin-I/Task-Manager-Angular.git
+cd task-manager
+npm install
+```
 
-## Running unit tests
+Запустить mock REST API в терминале:
 
-Run `ng test` to execute the unit tests via [Karma](https://karma-runner.github.io).
+```bash
+npm run api
+```
 
-## Running end-to-end tests
+В отдельном терминале запустить Angular-приложение:
 
-Run `ng e2e` to execute the end-to-end tests via a platform of your choice. To use this command, you need to first add a package that implements end-to-end testing capabilities.
+```bash
+npm start
+```
 
-## Further help
+Приложение будет доступно по адресу:
 
-To get more help on the Angular CLI use `ng help` or go check out the [Angular CLI Overview and Command Reference](https://angular.dev/tools/cli) page.
+```text
+http://localhost:4200
+```
+
+Mock API:
+
+```text
+http://localhost:3000
+```
+
+## Решения и компромиссы
+
+* Работа с API вынесена в `TaskService`. В качестве backend используется `json-server`; фильтрация задач выполняется через параметр `status` при запросе к API.
+* Выбранный фильтр хранится в состоянии компонента. При его изменении выполняется новый запрос; `switchMap` предотвращает отображение устаревшего результата.
+* Для загрузки, ошибки и пустого списка предусмотрены отдельные состояния интерфейса. При ошибке загрузку можно повторить без перезагрузки страницы.
+* При создании задачи клиент передаёт `status` и `createdAt`, поскольку mock API сохраняет тело запроса как есть и добавляет только `id`.
+* Изменение статуса реализовано через optimistic update: статус меняется в интерфейсе сразу, а при ошибке запроса восстанавливается предыдущее значение и отображается сообщение об ошибке.
+* Форма создания задачи реализована через Angular Reactive Forms с валидацией обязательного поля, максимальной длины и запретом названия, состоящего только из пробелов.
+* Я сознательно не добавлял отдельную библиотеку управления состоянием и не усложнял архитектуру дополнительными слоями, так как для небольшого приложения это было бы избыточно.
+
+## Что дальше
+
+Если бы было ещё время, я бы:
+
+* доработал дизайн кнопки изменения статуса;
+* добавил адаптивность для небольших экранов;
+* улучшил доступность модального окна и управление фокусом с клавиатуры;
+* добавил unit-тесты для сервиса работы с API и логики переходов статусов.
+
+Из того, что мне самому не нравится в решении, - Git workflow. Поскольку это тестовое задание и я работал один, все изменения делал непосредственно в `master`. В реальном проекте я бы разделял задачи по отдельным веткам и создавал Pull Request для каждой законченной части.
+
+## Использование ИИ
+
+ИИ использовался для:
+
+* помощи с установкой и настройкой mock API;
+* обсуждения архитектуры приложения и вариантов реализации;
+* поиска решений возникающих в процессе разработки проблем.
+
+Предложения ИИ я перепроверял самостоятельно и проверял работоспособность приложения после внесения изменений.
+
+## Сколько времени заняло
+
+Примерно **2-2,5 дня**.
+
+### Задания со звёздочкой
+
+* Мгновенная смена статуса (optimistic update)
