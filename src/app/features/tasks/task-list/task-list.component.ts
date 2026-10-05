@@ -120,41 +120,45 @@ export class TaskListComponent {
   }
 
   updateTaskStatus(task: Task): void {
-  if (task.status === 'done' || this.updatingTaskIds.has(task.id)) {
-    return;
+    if (task.status === 'done' || this.updatingTaskIds.has(task.id)) {
+      return;
+    }
+
+    const previousStatus = task.status;
+
+    const nextStatus: TaskStatus =
+      previousStatus === 'new' ? 'in_progress' : 'done';
+
+    this.updatingTaskIds.add(task.id);
+    this.statusUpdateErrors.delete(task.id);
+
+    this.tasks = this.tasks.map((currentTask) =>
+      currentTask.id === task.id
+        ? { ...currentTask, status: nextStatus }
+        : currentTask,
+    );
+
+    this.taskService.updateStatus(task.id, nextStatus).subscribe({
+      next: (updatedTask) => {
+        this.tasks = this.tasks.map((currentTask) =>
+          currentTask.id === task.id ? updatedTask : currentTask,
+        );
+
+        this.updatingTaskIds.delete(task.id);
+      },
+
+      error: () => {
+        this.tasks = this.tasks.map((currentTask) =>
+          currentTask.id === task.id
+            ? { ...currentTask, status: previousStatus }
+            : currentTask,
+        );
+
+        this.updatingTaskIds.delete(task.id);
+        this.statusUpdateErrors.add(task.id);
+      },
+    });
   }
-
-  const previousStatus = task.status;
-
-  const nextStatus: TaskStatus =
-    previousStatus === 'new' ? 'in_progress' : 'done';
-
-  this.updatingTaskIds.add(task.id);
-  this.statusUpdateErrors.delete(task.id);
-
-  task.status = nextStatus;
-
-  this.taskService.updateStatus(task.id, nextStatus).subscribe({
-    next: (updatedTask) => {
-      const index = this.tasks.findIndex(
-        (currentTask) => currentTask.id === task.id,
-      );
-
-      if (index !== -1) {
-        this.tasks[index] = updatedTask;
-      }
-
-      this.updatingTaskIds.delete(task.id);
-    },
-
-    error: () => {
-      task.status = previousStatus;
-
-      this.updatingTaskIds.delete(task.id);
-      this.statusUpdateErrors.add(task.id);
-    },
-  });
-}
 
   isStatusUpdating(task: Task): boolean {
     return this.updatingTaskIds.has(task.id);

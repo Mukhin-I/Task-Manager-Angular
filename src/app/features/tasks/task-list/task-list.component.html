@@ -88,14 +88,10 @@
                 [disabled]="isStatusUpdating(task)"
                 (click)="updateTaskStatus(task)"
               >
-                @if (isStatusUpdating(task)) {
-                  Обновление...
+                @if (task.status === 'new') {
+                  → В работу
                 } @else {
-                  @if (task.status === 'new') {
-                    → В работу
-                  } @else {
-                    ✓ Завершить
-                  }
+                  ✓ Завершить
                 }
               </button>
             }
